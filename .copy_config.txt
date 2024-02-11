@@ -1,0 +1,49 @@
+# Imports
+from datetime import timedelta
+import os, secrets, string, random
+
+# This will get the path of this current file and convert the relative path to an absolute path then store it in the variable 'basedir'
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+# TODO : create a remember me dureation
+# This will represent the remember me duration
+# expires = timedelta(second=432000)
+
+# This will generate random cryptographic secrets if the secret key is not found
+num = 80
+key = "".join(secrets.choice(string.ascii_letters + string.digits) for x in range(num))
+sec_key = str(key)
+
+
+# This is the configuration class function
+class Config(object):
+    # This is the secret key
+    SECRET_KEY = os.environ.get('SECRET_KEY') or sec_key
+
+    # This is the database connection configuration
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(basedir, 'app.db')
+
+    # This is responsible for tracking modification in the application
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    # TODO:timing the login user remember me duration
+    # REMEMBER_COOKIES_DURATION = expires
+
+    # TODO: email configuration
+    # This will enable email configuration in the app
+    # MAIL_SERVER = os.environ.get('MAIL_SERVER')
+    # MAIL_PORT = int(os.environ.get('MAIL_PORT') or 25)
+    # MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS') is not None
+    # MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
+    # MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+    # ADMINS = ['mailsamplebox@gmail']
+
+    # TODO: UPLOAD FOLDER
+    # This will set the default upload folder
+    # UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER')
+
+
+    # TODO: LANGUAGE TRANSLATION
+    # This will enable language translation
+    # LANGUAGES = ['en', 'pt']
+    # This is the new file that is used to test if the config file is updating. it is updating oooo

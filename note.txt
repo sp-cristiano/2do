@@ -1,0 +1,9 @@
+python -m venv venv
+
+source venv/Scripts/activate
+
+python -m pip install -r requirement.txt
+
+export FLASK_APP=app
+
+python -m flask --debug run
