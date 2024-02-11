@@ -1,11 +1,15 @@
 # Global Imports
 import os
-from flask import Flask
+from flask import Flask, render_template
+from flask_sqlalchemy import SQLAlchemy
+from .blueprints.user.models import db
+from .blueprints.admin.models import db
 
 # This will create and configure the app
 def create_app(test_config=None):
     # creating the app instance
     app = Flask(__name__, instance_relative_config=True)
+
 
     if test_config is None:
          # This will ensure the instance folder exists. if it doesn't exist it will be created.
@@ -56,12 +60,25 @@ def create_app(test_config=None):
 
         app.config.from_mapping(test_config)
 
+    # initializing the database
+    # db = SQLAlchemy()
+    db.init_app(app)
+
+    #  Importing the blueprints and the registering blueprints
+    from .blueprints.admin.routes import admin_bp
+    app.register_blueprint(admin_bp)
+
+    from .blueprints.user.routes import user_bp
+    app.register_blueprint(user_bp)
+
+
     # this will show the root directory of the app
     @app.route('/')
     # @app.route('/hello')
-    def hello():
-        current_directory = os.getcwd()
-        # show = print(current_directory)
-        return current_directory
+    def index():
+        return render_template('index.html')
+        # current_directory = os.getcwd()
+        # # show = print(current_directory)
+        # return current_directory
 
     return app
