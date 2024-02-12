@@ -43,6 +43,10 @@ class Config(object):
     # MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     DEFAULT_ADMIN_PASSWORD = os.environ.get('DEFAULT_ADMIN_PASSWORD')
     DEFAULT_ADMIN_PIN = os.environ.get('DEFAULT_ADMIN_PIN')
+    DEFAULT_ADMIN_USERNAME = os.environ.get('DEFAULT_ADMIN_USERNAME')
+    DEFAULT_ADMIN_NAME = os.environ.get('DEFAULT_ADMIN_NAME')
+    DEFAULT_ADMIN_PHONE = os.environ.get('DEFAULT_ADMIN_PHONE')
+    DEFAULT_ADMIN_GENDER = os.environ.get('DEFAULT_ADMIN_GENDER')
     # ADMINS = ['mailsamplebox@gmail']
     # ADMIN_EMAIL = os.environ.get('MAIL_USERNAME')
 
