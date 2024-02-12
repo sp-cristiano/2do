@@ -6,6 +6,11 @@ user_bp = Blueprint('user', __name__, static_folder='./static/', template_folder
 def index():
     return render_template('user/index.html')
 
+@user_bp.route('/register', methods=('GET', 'POST'))
+def register():
+    
+    return render_template('user/register.html')
+
 @user_bp.route('/users')
 def get_user():
     return jsonify({

@@ -1,9 +1,40 @@
 # Global Imports
-import os
-from flask import Flask, render_template
+import os, logging
+from logging.handlers import SMTPHandler, RotatingFileHandler
+from flask import Flask, render_template, request, g
 from flask_sqlalchemy import SQLAlchemy
-from .blueprints.user.models import db
-from .blueprints.admin.models import db
+from flask_migrate import Migrate
+from flask_login import LoginManager
+from flask_mail import Mail
+from flask_moment import Moment
+# from werkzeug.security import generate_password_hash
+# from passlib.hash import argon2
+
+# Assigning the db object
+db = SQLAlchemy()
+
+# Assigning the migrate object
+migrate = Migrate()
+
+# Assigning the login object
+login = LoginManager()
+
+# # This will force unauthenticated users to login before accessing any login required page.
+# login.login_view = 'login'
+
+# # formating the login view message
+# login.login_message = 'Sorry, you are not allowd to view this page.Please log in to access this page.'
+# # Formating the login view message category
+# login.login_message_category = 'info'
+
+# Assigning the mail object
+mail = Mail()
+
+# Assigning the moment object
+moment = Moment()
+
+# from .blueprints.user.models import db
+# from .blueprints.admin.models import db
 
 # This will create and configure the app
 def create_app(test_config=None):
@@ -60,9 +91,36 @@ def create_app(test_config=None):
 
         app.config.from_mapping(test_config)
 
-    # initializing the database
-    # db = SQLAlchemy()
+    # initializing the database to the app
     db.init_app(app)
+
+    # initializing the migrate to the app
+    migrate.init_app(app, db)
+
+    # initializing the login to the app
+    login.init_app(app)
+
+    from .blueprints.user.models import User
+    from .blueprints.admin.models import Admin 
+    @login.user_loader
+    def load_user(id):
+        user = User.query.get(int(id))
+        return user
+
+    # This will force unauthenticated users to login before accessing any login required page.
+    login.login_view = 'login'
+
+    # formating the login view message
+    login.login_message = 'Sorry, you are not allowd to view this page.Please log in to access this page.'
+    # Formating the login view message category
+    login.login_message_category = 'info'
+
+    # initializing the mail to the app
+    mail.init_app(app)
+
+    # initializing the moment to the app
+    moment.init_app(app)
+
 
     #  Importing the blueprints and the registering blueprints
     from .blueprints.admin.routes import admin_bp
@@ -72,13 +130,18 @@ def create_app(test_config=None):
     app.register_blueprint(user_bp)
 
 
+
+
     # this will show the root directory of the app
     @app.route('/')
-    # @app.route('/hello')
     def index():
         return render_template('index.html')
         # current_directory = os.getcwd()
         # # show = print(current_directory)
         # return current_directory
+
+    # @app.route('/login')
+    # def login():
+    #     return render_template('index.html')
 
     return app
