@@ -1,10 +1,11 @@
 # Global Imports
+from datetime import datetime
 import os, logging
 from logging.handlers import SMTPHandler, RotatingFileHandler
-from flask import Flask, render_template, request, g
+from flask import Flask, render_template, request, g, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask_login import LoginManager
+from flask_login import LoginManager, current_user
 from flask_mail import Mail
 from flask_moment import Moment
 # from werkzeug.security import generate_password_hash
@@ -101,19 +102,12 @@ def create_app(test_config=None):
     login.init_app(app)
 
     from .blueprints.user.models import User
-    from .blueprints.admin.models import Admin 
+    from .blueprints.admin.models import Admin
     @login.user_loader
     def load_user(id):
         user = User.query.get(int(id))
         return user
 
-    # This will force unauthenticated users to login before accessing any login required page.
-    login.login_view = 'login'
-
-    # formating the login view message
-    login.login_message = 'Sorry, you are not allowd to view this page.Please log in to access this page.'
-    # Formating the login view message category
-    login.login_message_category = 'info'
 
     # initializing the mail to the app
     mail.init_app(app)
@@ -129,13 +123,33 @@ def create_app(test_config=None):
     from .blueprints.user.routes import user_bp
     app.register_blueprint(user_bp)
 
+    # This will force unauthenticated users to login before accessing any login required page.
+    login.login_view = 'user.login'
+
+    # formating the login view message
+    login.login_message = 'Sorry, you are not allowd to view this page.Please log in to access this page.'
+    # Formating the login view message category
+    login.login_message_category = 'info'
+
+    from .blueprints.user import routes
+
+
+    # this will record the user last seen and update it to the database
+    @app.before_request
+    def before_request():
+        if current_user.is_authenticated:
+            current_user.last_updated = datetime.datetime.utcnow() + datetime.timedelta(0)
+            db.session.commit()
+
+
 
 
 
     # this will show the root directory of the app
     @app.route('/')
     def index():
-        return render_template('index.html')
+        return redirect(url_for('user.index'))
+        # return render_template('index.html')
         # current_directory = os.getcwd()
         # # show = print(current_directory)
         # return current_directory

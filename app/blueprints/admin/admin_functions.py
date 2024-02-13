@@ -1,5 +1,6 @@
 from app import create_app, db
 from werkzeug.security import generate_password_hash
+from app.blueprints.user.models import Status
 from .models import Admin
 from app.global_functions import add_commit_close
 
@@ -31,10 +32,16 @@ def create_default_admin():
 
         # User Admin table
         if is_table_empty(Admin) is None:
-
             default_user = Admin(name=admin_name, username=admin_username, email=admin_email, _password=hashed_password, phone=admin_phone, gender=admin_gender, _pin=hashed_pin)
 
             # this function will add, commit then close a connection when calling it and if there is an error it will rollback to the previous state.
             add_commit_close(db, default_user)
+        else:
+            pass
+
+        # Insserting default status into database
+        if is_table_empty(Status) is None:
+            default_status = Status(id=1, name='incomplete')
+            add_commit_close(db, default_status)
         else:
             pass
