@@ -26,6 +26,8 @@ class UserForm(FlaskForm):
     submit = SubmitField('Register')
 
     # Custom Validations
+
+    # validating username
     def validate_username(self, username):
         user_name_input = username.data
         user_name_input = user_name_input.lower()
@@ -36,6 +38,7 @@ class UserForm(FlaskForm):
         if user:
             raise ValidationError(f'This username "{user_name_input}" is already taken. Please choose a different username.')
 
+    # validating email
     def validate_email(self, email, username):
         user_name_input = username.data
         user_name_input = user_name_input.lower()
@@ -50,6 +53,7 @@ class UserForm(FlaskForm):
             if is_used:
                 raise ValidationError(f'This email "{user_email_input}" is already taken. Please choose a differnt email.')
 
+    # validating phone
     def validate_phone(self, phone, username):
         user_name_input = username.data
         user_name_input = user_name_input.lower()
@@ -63,3 +67,21 @@ class UserForm(FlaskForm):
             is_used = check_password_hash(db_phone, user_phone_input)
             if is_used:
                 raise ValidationError(f'This phone number "{user_phone_input}" is already taken. Please choose a differnt phone number.')
+
+
+# user login form
+class LoginForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(message='Username is required.'), AlphaNumeric(message='Username can only contain alphabets and numbers.'), Length(min=2, max=200, message='The minimum and maximum lenght is %(min)d and %(max)d')])
+
+    password = PasswordField('Password', validators=[DataRequired(message='Password is required.'), Length(min=2, max=200, message='The minimum and maximum lenght is %(min)d and %(max)d'), EqualTo('confirm_password', message='Passwords must match.')])
+
+    remember_me = BooleanField('Remember Me')
+
+    submit = SubmitField('Login')
+
+class TaskForm(FlaskForm):
+    title =  StringField('Title', validators=[DataRequired(message='Task title is required.'), Length(min=2, max=200, message='The minimum and maximum lenght is %(min)d and %(max)d')])
+    
+    description = TextAreaField('Description', validators=[DataRequired(message='Task description is required.'), Length(min=2, max=500, message='The minimum and maximum lenght is %(min)d and %(max)d')])
+
+    submit = SubmitField('Create TODO')

@@ -1,4 +1,7 @@
 from flask import current_app
+from werkzeug.security import generate_password_hash
+from app.blueprints.admin.models import Admin
+from app import db, create_app
 
 # this function will add, commit then close a connection when calling it and if there is an error it will rollback to the previous state.
 def add_commit_close(db, *objects):
