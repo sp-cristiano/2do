@@ -29,16 +29,16 @@ class User(UserMixin, db.Model):
         'polymorphic_identity': 'user',
         'polymorphic_on': user_role
         }
-    def __init__(self, name, username, email, _password, phone, user_role, gender, date_created, last_updated):
+    def __init__(self, name, username, email, _password, phone, gender):
         self.name = name
         self.username = username
         self.email = email
         self._password = _password
         self.phone = phone
-        self.user_role = user_role
+        # self.user_role = user_role
         self.gender = gender
-        self.date_created = date_created
-        self.last_updated = last_updated
+        # self.date_created = date_created
+        # self.last_updated = last_updated
 
     # setting password hashing system
     @property

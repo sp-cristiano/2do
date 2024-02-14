@@ -13,6 +13,10 @@ class Admin(User):
         'polymorphic_identity': 'admin'
     }
 
+    def __init__(self, _pin, **kwargs):
+        super(Admin, self).__init__(**kwargs)
+        self._pin = _pin
+
     # setting pin shashing system
     @property
     def pin(self):
