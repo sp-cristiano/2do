@@ -16,7 +16,7 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(255), unique=True, nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
     _password = db.Column(db.String(255), nullable=False)
-    phone = db.Column(db.String(255), nullable=False)
+    phone = db.Column(db.String(255),unique=True, nullable=False)
     user_role = db.Column(db.String(80), nullable=False)
     gender = db.Column(db.String(80), nullable=False)
     date_created = db.Column(db.DateTime, index=True, default=datetime.utcnow(), nullable=False)
@@ -29,6 +29,16 @@ class User(UserMixin, db.Model):
         'polymorphic_identity': 'user',
         'polymorphic_on': user_role
         }
+    def __init__(self, name, username, email, _password, phone, user_role, gender, date_created, last_updated):
+        self.name = name
+        self.username = username
+        self.email = email
+        self._password = _password
+        self.phone = phone
+        self.user_role = user_role
+        self.gender = gender
+        self.date_created = date_created
+        self.last_updated = last_updated
 
     # setting password hashing system
     @property
@@ -53,10 +63,20 @@ class Task(db.Model):
     # defining a many to one relationship between task and status
     status_id = db.Column(db.Integer, db.ForeignKey('status.id'), nullable=False, default=1)
 
+    def __init__(self, title, description, last_updated, due_date, status_id):
+        self.title = title
+        self.description = description
+        self.last_updated = last_updated
+        self.due_date = due_date
+        self.status_id = status_id
+
 class Status(db.Model):
     __tablename__ = 'status'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), nullable=False)
+    name = db.Column(db.String(80), unique=True, nullable=False)
 
     # defining a one to many relationship between status and tasks
     tasks = db.relationship('Task', backref='status', lazy=True, cascade='all, delete')
+
+    def __init__(self, name):
+        self.name = name

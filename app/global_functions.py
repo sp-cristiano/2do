@@ -1,3 +1,4 @@
+import secrets, string
 from flask import current_app
 # from werkzeug.security import generate_password_hash
 # from app.blueprints.admin.models import Admin
@@ -18,5 +19,7 @@ def add_commit_close(db, *objects):
         finally:
             db.session.close()
 
-
-
+# this function will generate random alphanumeric token
+def generate_random_alphanumeric_token(lenght=32):
+    alphabet = string.ascii_letters + string.digits
+    return ''.join(secrets.choice(alphabet) for _ in range(lenght))
