@@ -12,7 +12,7 @@ token = generate_random_alphanumeric_token()
 @user_bp.route('/', methods=('GET', 'POST'))
 @user_bp.route('/home', methods=('GET', 'POST'))
 def index():
-    # if user is authenticated, the would be redirected to its dashboard else remain in the homepage
+    # if user is authenticated, the user would be redirected to its dashboard else remain in the homepage
     if current_user.is_authenticated:
         user_role = current_user.user_role
         if user_role == 'admin':
